@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+dowJones.py
+nasdaq.py
+sAndP500.py
+
+.idea/

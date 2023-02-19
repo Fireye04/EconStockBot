@@ -1,6 +1,6 @@
 import random
 
-# List of stock name strings.
+# List of stock name strings. These are all the stocks the program can buy from
 # Looks like this: ["YOUR", "MOM", "IS", "GAY"]
 stocks = []
 
@@ -12,7 +12,7 @@ weights = []
 
 # a number to multiply the weights by to attain a minimum of one in the smallest weight value. (no decmials)
 # usually a factor of 10
-multiplier = 10
+weightMultiplier = 10
 
 # a list of integers (no decmials) attained by multiplying each weight by the multiplier and rounding
 # to the nearest whole number
@@ -33,31 +33,93 @@ final = []
 # how many stocks you want chosen from the list
 numStocks = 10
 
+# ----- INFO -----
+
+# Spendable money
+funds = 0
+
+# money inside stock
+fundsInStock = 0
+
+# The stocks that you have money in right now and none.
+# none represents unspent funds and must always be at the end
+# looks like this ["YOUR", "MOM", "GAY", "none"]
+myStocks = ["none"]
+
+# how much money you have in each stock (thousands) and funds
+# funds represents unspent money, and must always be at the end
+# looks like this [4200, 12539, 6900, funds]
+myWeights = [funds]
+
+# converts thousands to ones. Increase this number to kill your pc and get more granular/ detailed outputs
+multiplier = 0.001
+
+# distribution of your stock. similar to final, however, this is yours and final is the pool of available
+# purchasable stock
+myFinal = []
+
+# ----- INFO -----
+
+# default percent of available funds/stock to sell/buy
+defaultPercent = 10
+
 
 def main():
     # To get a set of lists, just run the following command:
-    listCalc(stocks, weights, multiplier)
+
+    print("\n----- Available Stocks -----")
+    listCalc(stocks, weights, weightMultiplier)
+    print("----- Available Stocks -----\n")
+
+    print("----- Your Stocks -----")
+    listCalc(myStocks, myWeights, weightMultiplier)
+    print("----- Your Stocks -----")
+
     # then paste the printed lists into each corresponding variable within the code
 
-    # From there, run this
-    print(random.sample(final, numStocks))
-    # and boom, you have a buncha random stocks
+    # determines amount to buy and/or sell based on given variables
+    print("\n----- Buy -or- Sell -----")
+    print(f"sell {sellStock()} at ${int(1 / multiplier)} per listed option")
+    print(f"buy {buyStock()} at ${int(1 / multiplier)} per listed option")
+    print("----- Buy -or- Sell -----")
 
 
 # ----- Everything below this point is just calculations ----- #
 
+def buyStock(percent=defaultPercent):
+    # get percentage of available funds to invest
+    buy = funds * (percent / 100)
+
+    # turn said percentage into a usable int
+    buy = round(buy * multiplier)
+
+    return random.sample(final, buy)
+
+
+def sellStock(percent=defaultPercent):
+    # get percentage of available funds to invest
+    sell = fundsInStock * (percent / 100)
+
+    # turn said percentage into a usable int
+    sell = round(sell * multiplier)
+
+    return random.sample(myFinal, sell)
+
+
 def listCalc(stonks, weightss, multiplierr):
     multiplierss = multiplierCalc(weightss, multiplierr)
-    print(f"multipliers- {multiplierss}")
+    print(f"multipliers = {multiplierss}\n")
+
+    print(f"multiplier = {multiplierr}\n")
 
     pairssW = pairCalc(stonks, weightss)
-    print(f"pairsW- {pairssW}")
+    print(f"pairsW = {pairssW}\n")
 
     pairss = pairCalc(stonks, multiplierss)
-    print(f"pairs- {pairss}")
+    print(f"pairs = {pairss}\n")
 
     finall = finalCalc(pairss)
-    print(f"final- {finall}")
+    print(f"final = {finall}")
 
 
 def finalCalc(pairs):
